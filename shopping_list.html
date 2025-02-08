@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="shopping_list.js"></script>
+    <title>RoomieHub - ShoppingList</title>
+</head>
+<body>
+    <div class="horizontal-container">
+        <button onclick="window.location.href='home.html'">Return Home</button>
+        <h1>RoomieHub</h1>
+    </div>
+    <h2>ShoppingList</h2>
+    <div class="container">
+        <table id="shopping-list">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Item</th>
+                    <th>Added by</th>
+                </tr>
+            </thead>
+            <tbody>   
+            </tbody>
+        </table>
+        
+        <div class="horizontal-container">
+            <button onclick="openPopup('add-item-popup')">Add Item</button>
+            <button onclick="checkRemove()">Remove Item</button>
+        </div>
+        <button>Mark as bought</button>
+        <button>See Shopping History</button>
+
+        <div class="overlay" id="overlay"></div>
+        <div class="popup" id="add-item-popup">
+            <h3>Add New Item</h3>
+            <input type="text" id="newItemInput" placeholder="Enter item name">
+            <br>
+            <button onclick="addItem()">Add Item</button>
+            <button onclick="closePopup('add-item-popup')">Cancel</button>
+        </div>
+        <div class="popup" id="remove-item-popup">
+            <h3>Are you sure you want to remove item(s)</h3>
+            <br>
+            <button onclick="removeSelectedItems()">Remove Item</button>
+            <button onclick="closePopup('remove-item-popup')">Cancel</button>
+        </div>
+    </div>
+</body>
+</html>
