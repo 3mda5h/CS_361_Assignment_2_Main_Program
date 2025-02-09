@@ -1,34 +1,60 @@
+document.addEventListener("DOMContentLoaded", loadTable); // Load saved rows on page load
+
+//loads table data from local storage, this function is called whenever the page is refreshed/loaded
+function loadTable() 
+{
+    let table = document.getElementById("shopping-list").getElementsByTagName("tbody")[0];
+    let savedRows = JSON.parse(localStorage.getItem("shopping-list")) || []; //if local storage is empty (null), will create an empty array
+
+    savedRows.forEach(rowData => {
+        let row = table.insertRow();
+        row.insertCell(0).innerHTML = '<input type="checkbox" onclick="toggleRow(this)">';
+        row.insertCell(1).innerText = rowData.item;
+        row.insertCell(2).innerHTML = rowData.person;
+    });
+}
+
+//changes color of table row when it is selected
 function toggleRow(checkbox) 
 {
-    let row = checkbox.parentElement.parentElement; // Get the <tr>
+    let row = checkbox.parentElement.parentElement; // Get the <tr> (table row)
     row.classList.toggle("selected", checkbox.checked);
 }
 
+//opens (makes visible) the popup with the given ID 
 function openPopup(id) 
 {
-    console.log("this function was called!")
-    document.getElementById(id).style.display = "block"; /*makes it visible*/
+    document.getElementById(id).style.display = "block"; //makes it visible
+    if(id === 'add-item-popup') 
+    {
+        console.log("called");
+        document.getElementById('new-item-input').focus();
+    }
     document.getElementById("overlay").style.display = "block";
     if(id === 'remove-item-popup')
     {
         let checkedItems = getCheckedItems();
-        let selector = "#" + id + " h3";
         for(let i = 0; i < checkedItems.length; i++)
         {
-            document.querySelector(selector).innerHTML += (" \"" + checkedItems[i]) + "\"";
+            document.getElementById('remove-item-message').textContent += " \"" + checkedItems[i] + "\"";
+            //this is for adding apporpriate amount of commas and "and"
             if(i === (checkedItems.length - 2)) //have reached 2nd to last element in list
             {
-                document.querySelector(selector).innerHTML += " and";
+                document.getElementById('remove-item-message').textContent += " and";
             }
-            else if(i != (checkedItems.length - 1)) document.querySelector(selector).innerHTML += ", "; //else if not last item
+            else if(i != (checkedItems.length - 1)) 
+            {
+                document.getElementById('remove-item-message').textContent += ", ";
+            }
         }
-        document.querySelector(selector).innerHTML += "?";
+        document.getElementById('remove-item-message').textContent += "?";
     }
 }
 
+//closes the popup with the given ID
 function closePopup(id) 
 {
-    document.getElementById(id).style.display = "none"; /*makes it inivisible*/
+    document.getElementById(id).style.display = "none"; //makes it inivisible
     document.getElementById("overlay").style.display = "none";
 
     if(id === 'remove-item-popup') 
@@ -38,9 +64,10 @@ function closePopup(id)
     }
 }
 
+//adds a row to the HTML table containing item name and username of person that added item
 function addItem() 
 {
-    let input = document.getElementById("newItemInput").value.trim();
+    let input = document.getElementById("new-item-input").value.trim();
     if (input === "") 
     {
         alert("Please enter an item name!");
@@ -54,16 +81,18 @@ function addItem()
     let cell2 = newRow.insertCell(1);
     let cell3 = newRow.insertCell(2);
 
-    cell1.innerHTML = `<input type="checkbox" onclick="toggleRow(this)">`;
+    cell1.innerHTML = '<input type="checkbox" onclick="toggleRow(this)">';
     cell2.textContent = input;
     cell3.textContent = localStorage.getItem("username");
 
-    document.getElementById("newItemInput").value = ""; // Clear input field
+    document.getElementById("new-item-input").value = ""; // Clear input field
     closePopup('add-item-popup');
+    saveTable();
 }
 
-//check if remove is valid (there are items in the list, at least 1 item is checked, and user confirms ok to remove)
-function checkRemove() {
+//checks if remove is valid (there are items in the list, at least 1 item is checked, and user confirms ok to remove)
+function checkRemove() 
+{
     let table = document.getElementById("shopping-list").getElementsByTagName("tbody")[0]; 
     let rows = table.getElementsByTagName("tr"); 
     
@@ -84,6 +113,7 @@ function checkRemove() {
     openPopup('remove-item-popup');
 }
 
+//deletes the currently selected rows from the HTML table
 function removeSelectedItems()
 {
     closePopup('remove-item-popup');
@@ -91,14 +121,17 @@ function removeSelectedItems()
     let rows = table.getElementsByTagName("tr"); 
     
     // Loop from the end because we change size of array as we delete I think
-      for (let i = rows.length - 1; i >= 0; i--) {
+    for (let i = rows.length - 1; i >= 0; i--)
+    {
         let checkbox = rows[i].getElementsByTagName("input")[0]; 
         if (checkbox && checkbox.checked) {
             table.deleteRow(i); 
         }
     }
+    saveTable();
 }
 
+//finds all the items in the shopping list that are checked, then returns the item names in an array
 function getCheckedItems()
 {
     let table = document.getElementById("shopping-list").getElementsByTagName("tbody")[0]; 
@@ -117,3 +150,19 @@ function getCheckedItems()
     }
     return checkedItems;
 }
+
+//saves current table data in local storage using JSON
+function saveTable() {
+    let table = document.getElementById("shopping-list").getElementsByTagName("tbody")[0];
+    let rows = [];
+
+    for (let row of table.rows) 
+    {
+        let item = row.cells[1].innerText;
+        let person = row.cells[2].innerText;
+        rows.push({ item, person });
+    }
+
+    localStorage.setItem("shopping-list", JSON.stringify(rows));
+}
+

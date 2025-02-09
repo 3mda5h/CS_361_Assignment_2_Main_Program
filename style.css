@@ -22,7 +22,7 @@ span{
     background: var(--light-purple);
     padding: 20px;
     border-radius: 8px;
-    width: 300px;
+    width: 400px;
     text-align: center;
 }
 input {
@@ -35,6 +35,7 @@ input {
 }
 button {
     width: 100%;
+    font-size: 17px;
     padding: 10px;
     background: var(--dark-purple);
     color: white;
@@ -69,8 +70,10 @@ input[type="checkbox"] {
     display:flex;
     gap: 10px;
 }
-
-/* Popup styling */
+.horizontal-container button{  /* elements will be horizontally aligned */
+   height: 40%;
+   white-space: nowrap;
+}
 .popup {
     display: none; /*this hides this element by default*/
     position: fixed; 
@@ -101,4 +104,17 @@ input[type="checkbox"] {
     height: 100%;
     background: rgba(0, 0, 0, 0.5); 
     z-index: 999;/*makes sure ovelay appears behind popup but above everything else */
+}
+
+#plus-button{
+    width: 30%;
+}
+
+.header-button{
+    font-size: 22px;
+}
+
+#sign-out-button{
+    width: 10%;
+    margin: 50px;
 }
